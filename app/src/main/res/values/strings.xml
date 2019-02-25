@@ -3,6 +3,6 @@
     <string name="play_var1">Play Simon React</string>
     <string name="play_var2">Play Simon Squared</string>
     <string name="play_var3">Play Simon Reverse</string>
-    <string name="about">About</string>
+    <string name="about">About App</string>
 
 </resources>
