@@ -43,7 +43,7 @@
             android:inputType="textPersonName" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/button_react"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/play_var1" />
