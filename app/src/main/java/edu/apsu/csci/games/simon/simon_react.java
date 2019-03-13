@@ -29,25 +29,25 @@ public class simon_react extends Activity {
 
         soundsLoaded = new HashSet<Integer>(); //ArrayList of sounds
 
-        findViewById(R.id.button_blue).setOnClickListener(new buttonListener());
-        findViewById(R.id.button_green).setOnClickListener(new buttonListener());
-        findViewById(R.id.button_red).setOnClickListener(new buttonListener());
-        findViewById(R.id.button_yellow).setOnClickListener(new buttonListener());
+//        findViewById(R.id.button_blue).setOnClickListener(new buttonListener());
+//        findViewById(R.id.button_green).setOnClickListener(new buttonListener());
+//        findViewById(R.id.button_red).setOnClickListener(new buttonListener());
+//        findViewById(R.id.button_yellow).setOnClickListener(new buttonListener());
 
     }
-    class buttonListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            FlashButton fb = new FlashButton(simon_react.this);
-            fb.execute(v.getId());
-
-            Button button = (Button) v;
-            int playerPick = Integer.parseInt(button.getText().toString());
-
-            simon.setPlayerPick(playerPick);
-        }
-    }
+//    class buttonListener implements View.OnClickListener {
+//
+//        @Override
+//        public void onClick(View v) {
+//            FlashButton fb = new FlashButton(simon_react.this);
+//            fb.execute(v.getId());
+//
+//            Button button = (Button) v;
+//            int playerPick = Integer.parseInt(button.getText().toString());
+//
+//            simon.setPlayerPick(playerPick);
+//        }
+//    }
 
     //SoundPool code for button sounds
     @Override
@@ -59,7 +59,7 @@ public class simon_react extends Activity {
 
         SoundPool.Builder spBuilder = new SoundPool.Builder();
         spBuilder.setAudioAttributes(attrBuilder.build());
-        spBuilder.setMaxStreams(4);
+        spBuilder.setMaxStreams(80);
         soundPool = spBuilder.build();
 
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
@@ -78,7 +78,7 @@ public class simon_react extends Activity {
         findViewById(R.id.button_blue).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playSound(blueId);
+                playButton(blueId, v);
             }
         });
 
@@ -86,7 +86,7 @@ public class simon_react extends Activity {
         findViewById(R.id.button_green).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playSound(greenId);
+                playButton(greenId, v);
             }
         });
 
@@ -94,7 +94,7 @@ public class simon_react extends Activity {
         findViewById(R.id.button_red).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playSound(redId);
+                playButton(redId, v);
             }
         });
 
@@ -102,7 +102,7 @@ public class simon_react extends Activity {
         findViewById(R.id.button_yellow).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playSound(yellowId);
+                playButton(yellowId, v);
             }
         });
 
@@ -119,10 +119,17 @@ public class simon_react extends Activity {
         }
     }
 
-    private void playSound(int soundId) {
+    private void playButton(int soundId, View buttonView) {
         if (soundsLoaded.contains(soundId)) {
             soundPool.play(soundId, 12.0f, 12.0f, 0, 0, 1.0f);
         }
+        FlashButton fb = new FlashButton(simon_react.this);
+        fb.execute(buttonView.getId());
+
+        Button button = (Button) buttonView;
+        int playerPick = Integer.parseInt(button.getText().toString());
+
+        simon.setPlayerPick(playerPick);
     }
 }
 
