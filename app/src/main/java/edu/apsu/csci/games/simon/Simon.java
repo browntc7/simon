@@ -1,4 +1,6 @@
 package edu.apsu.csci.games.simon;
+import android.graphics.drawable.ColorDrawable;
+
 import java.util.Random;
 
 
@@ -7,6 +9,7 @@ public class Simon {
     private int[] simon_sequence = new int[MAX_ROUNDS];
     private int[] player_sequence = new int[MAX_ROUNDS];
     private int current_round = 0;
+    private int player_round = 0;
     private Random rand = new Random();
 
 
@@ -39,11 +42,15 @@ public class Simon {
         return false;
     }
 
-    public int flashSquare(int color){
-        return color - 44000000;
+    public void flashOn(ColorDrawable drawable){
+        drawable.setAlpha(0);
     }
 
+    public void flashOff(ColorDrawable drawable){
+        drawable.setAlpha(255);
+    }
 
+    // don't think we need this
     private void clearPlayerSequence(){
         for(int i = 0; i < current_round; i++){
             player_sequence[i] = 0;
@@ -58,4 +65,6 @@ public class Simon {
         }
         return true;
     }
+
+
 }
