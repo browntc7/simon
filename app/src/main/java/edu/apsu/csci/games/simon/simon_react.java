@@ -59,7 +59,7 @@ public class simon_react extends Activity {
 
         SoundPool.Builder spBuilder = new SoundPool.Builder();
         spBuilder.setAudioAttributes(attrBuilder.build());
-        spBuilder.setMaxStreams(1);
+        spBuilder.setMaxStreams(4);
         soundPool = spBuilder.build();
 
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
