@@ -37,12 +37,10 @@ public class simon_react extends Activity {
 
         @Override
         public void onClick(View v) {
-            GameAnamations ga = new GameAnamations(simon_react.this);
+            GameAnimations ga = new GameAnimations(simon_react.this);
             //GameSounds gs = new GameSounds(simon_react.this);
 
             ga.execute(v.getId());
-            //gs.execute(R.raw.button1);
-
             gs.playSound(v.getId());
 
 
@@ -58,13 +56,32 @@ public class simon_react extends Activity {
     protected void onResume() {
         super.onResume();
 
-        gs.loadSounds();
+
+
+
         //gs.loadS(this);
+        //gs.loadSounds();
+
 
         findViewById(R.id.button_blue).setOnClickListener(new buttonListener());
         findViewById(R.id.button_green).setOnClickListener(new buttonListener());
         findViewById(R.id.button_red).setOnClickListener(new buttonListener());
         findViewById(R.id.button_yellow).setOnClickListener(new buttonListener());
+
+        gs.execute();
+
+//        while(!gs.soundsAreLoaded()) {
+//            Log.i("main ui sleep" , "sleeping");
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+        simon.playSimonSequence();
+
+
 //        AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
 //        attrBuilder.setUsage(AudioAttributes.USAGE_GAME);
 //

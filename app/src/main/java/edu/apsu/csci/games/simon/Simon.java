@@ -7,11 +7,13 @@ import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
 
-public class Simon {
+public class Simon extends AsyncTask<Void, Void, Void> {
     private static final int MAX_ROUNDS = 31;
     private int[] simon_sequence = new int[MAX_ROUNDS];
     private int[] player_sequence = new int[MAX_ROUNDS];
@@ -19,10 +21,15 @@ public class Simon {
     private int player_round = 0;
     private Random rand = new Random();
     private Activity activity;
+    private GameSounds gs;
+    private GameAnimations ga;
 
 
     Simon (Activity activity){
-       this.activity = activity;
+
+        this.activity = activity;
+        gs = new GameSounds(activity);
+        ga = new GameAnimations(activity);
     }
 
     //play next round
@@ -99,15 +106,21 @@ public class Simon {
         }
     }
 
+    @Override
+    protected Void doInBackground(Void... voids) {
+        playSimonSequence();
+        return null;
+    }
 }
-class GameAnamations extends AsyncTask<Integer, Integer, Void> {
+class GameAnimations extends AsyncTask<Integer, Integer, Void> {
 
     private Activity activity;
     private final static int ALPHA_MAX = 255;
     private final static int ALPHA_MIN = 32;
-    private final static int FLASH_MS = 200; // is this an emulator issue; or should i not be updating the ui like this? (some flash slow, some flash fast, some not at all); however the click is being registered!
+    private final static int FLASH_MS = 1;   // is this an emulator issue; or should i not be updating the ui like this? (some flash slow, some flash fast, some not at all); however the click is being registered!
+                                            // Turns out it was set to high; set it to 1ms and all is ok.
 
-    GameAnamations (Activity activity){
+    GameAnimations (Activity activity){
         this.activity = activity;
     }
 
@@ -180,9 +193,9 @@ class GameAnamations extends AsyncTask<Integer, Integer, Void> {
 //}
 
 
-class GameSounds {
+class GameSounds extends AsyncTask<Void, Void, Void>{
     private SoundPool soundPool; //variable for sounds
-    private Set<Integer> soundsLoaded; //variable for sounds ArrayList
+    private Set<Integer> soundsLoaded = new HashSet<>(); //variable for sounds ArrayList
     private Activity activity;
     private int blueId;
     private int greenId;
@@ -202,11 +215,12 @@ class GameSounds {
         spBuilder.setMaxStreams(8);
         soundPool = spBuilder.build();
 
+
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                 if (status == 0) { // success
-                    //soundsLoaded.add(sampleId);
+                    soundsLoaded.add(sampleId);
 
                     Log.i("SOUND", "Sound loaded " + sampleId);
                 } else {
@@ -214,14 +228,47 @@ class GameSounds {
                 }
             }
         });
+    }
 
+
+
+    public boolean soundsAreLoaded(){
+        return (soundsLoaded.contains(blueId) && soundsLoaded.contains(redId) && soundsLoaded.contains(greenId) && soundsLoaded.contains(yellowId));
     }
-    public void loadSounds(){
+    @Override
+    protected Void doInBackground(Void... voids) {
         blueId = soundPool.load(activity, R.raw.button1, 1);
-        redId = soundPool.load(activity, R.raw.button2, 1);
-        greenId = soundPool.load(activity, R.raw.button3, 1);
+        greenId = soundPool.load(activity, R.raw.button2, 1);
+        redId = soundPool.load(activity, R.raw.button3, 1);
         yellowId = soundPool.load(activity, R.raw.button4, 1);
+
+        if (!soundsAreLoaded()){
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Log.i("SoundID_Load", "blue " + Integer.toString(blueId));
+        Log.i("SoundID_Load", "red " + Integer.toString(redId));
+        Log.i("SoundID_Load", "gn " + Integer.toString(greenId));
+        Log.i("SoundID_Load", "yl " + Integer.toString(yellowId));
+        return null;
     }
+
+//    public void loadSounds() {
+//        blueId = soundPool.load(activity, R.raw.button1, 1);
+//        greenId = soundPool.load(activity, R.raw.button2, 1);
+//        redId = soundPool.load(activity, R.raw.button3, 1);
+//        yellowId = soundPool.load(activity, R.raw.button4, 1);
+//
+//        Log.i("SoundID_Load", "blue " + Integer.toString(blueId));
+//        Log.i("SoundID_Load", "red " + Integer.toString(redId));
+//        Log.i("SoundID_Load", "gn " + Integer.toString(greenId));
+//        Log.i("SoundID_Load", "yl " + Integer.toString(yellowId));
+//
+//    }
 
     public void playSound(int id){
         int result = -1;
@@ -230,17 +277,19 @@ class GameSounds {
         Log.i("SoundID", "gn " + Integer.toString(greenId));
         Log.i("SoundID", "yl " + Integer.toString(yellowId));
         if(id == R.id.button_blue){
-            result = soundPool.play(blueId, 12.0f, 12.0f, 0, 0, 1.0f);
+            result = soundPool.play(blueId, 1.0f, 1.0f, 0, 0, 1.0f);  //changed to 1.0 can hear sounds multiple time now. Thanks stack overflow user3450236!
         }
         else if (id == R.id.button_green) {
-            result = soundPool.play(greenId, 12.0f, 12.0f, 0, 0, 1.0f);
+            result = soundPool.play(greenId, 1.0f, 1.0f, 0, 0, 1.0f);
         }
         else if (id == R.id.button_red) {
-            result = soundPool.play(redId, 12.0f, 12.0f, 0, 0, 1.0f);
+            result = soundPool.play(redId, 1.0f, 1.0f, 0, 0, 1.0f);
         }
         else if (id == R.id.button_yellow) {
-            result = soundPool.play(yellowId, 12.0f, 12.0f, 0, 0, 1.0f);
+            result = soundPool.play(yellowId, 1.0f, 1.0f, 0, 0, 1.0f);
         }
         Log.i("SoundResult", Integer.toString(result));
     }
+
+
 }
