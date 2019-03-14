@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
         });
 
         Button play_squared = findViewById(R.id.button_squared);
-        play_react.setOnClickListener(new View.OnClickListener() {
+        play_squared.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 playSimonSquared();
