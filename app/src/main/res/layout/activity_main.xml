@@ -49,13 +49,13 @@
             android:text="@string/play_var1" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/button_squared"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/play_var2" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/button_reverse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/play_var3" />

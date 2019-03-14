@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +23,7 @@ public class simon_react extends Activity {
     //private Set<Integer> soundsLoaded; //variable for sounds ArrayList
 
    private GameSounds gs = new GameSounds(this);
+   private int hs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +82,9 @@ public class simon_react extends Activity {
 //        }
 
         simon.playSimonSequence();
-
+        //simon.checkForWin();
+        //hs = simon.setHighScore();
+        //Toast.makeText (getBaseContext(),"Congratulations! You Broke The High Score Record with: "+ hs, Toast.LENGTH_LONG).show();
 
 //        AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
 //        attrBuilder.setUsage(AudioAttributes.USAGE_GAME);

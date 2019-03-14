@@ -5,12 +5,16 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.AsyncTask;
+import android.support.annotation.MainThread;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+
+import static java.security.AccessController.getContext;
 
 
 public class Simon extends AsyncTask<Void, Void, Void> {
@@ -23,7 +27,7 @@ public class Simon extends AsyncTask<Void, Void, Void> {
     private Activity activity;
     private GameSounds gs;
     private GameAnimations ga;
-
+    private int highScore;
 
     Simon (Activity activity){
 
@@ -55,14 +59,20 @@ public class Simon extends AsyncTask<Void, Void, Void> {
     public boolean nextRound(){
         return compareSequence();
     }
-
+    //Checks for win
     public boolean checkForWin(){
         if(compareSequence() && current_round == MAX_ROUNDS){
             return true;
         }
         return false;
     }
-
+    //Sets high score if greater than current round and checkForWin is true and returns high score
+    public int setHighScore() {
+        if (checkForWin() && current_round > highScore){
+            highScore = current_round;
+        }
+        return highScore;
+    }
     public void flashOn(ColorDrawable drawable){
         drawable.setAlpha(0);
     }

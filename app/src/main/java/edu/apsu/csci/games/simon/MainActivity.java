@@ -27,11 +27,41 @@ public class MainActivity extends Activity {
                 playSimonReact();
             }
         });
+
+        Button play_squared = findViewById(R.id.button_squared);
+        play_react.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playSimonSquared();
+            }
+        });
+
+        Button play_reverse = findViewById(R.id.button_reverse);
+        play_reverse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playSimonReverse();
+            }
+        });
     }
 
     private void playSimonReact(){
         Log.i("Function Start ", "In Play");
         Intent intent = new Intent(getApplicationContext(), simon_react.class);
+        startActivity(intent);
+
+    }
+
+    private void playSimonSquared(){
+        Log.i("Function Start ", "In Play");
+        Intent intent = new Intent(getApplicationContext(), simon_squared.class);
+        startActivity(intent);
+
+    }
+
+    private void playSimonReverse(){
+        Log.i("Function Start ", "In Play");
+        Intent intent = new Intent(getApplicationContext(), simon_reverse.class);
         startActivity(intent);
 
     }
