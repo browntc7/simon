@@ -19,10 +19,10 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import static java.security.AccessController.getContext;
 
 
-public class Simon extends AsyncTask<Void, Void, Void> {
+
+public class Simon {
     private static final int MAX_ROUNDS = 31;
     private int[] simon_sequence = new int[MAX_ROUNDS];
     private int[] player_sequence = new int[MAX_ROUNDS];
@@ -34,7 +34,7 @@ public class Simon extends AsyncTask<Void, Void, Void> {
     private GameAnimations ga;
     private int highScore;
 
-    Simon (Activity activity){
+    Simon(Activity activity) {
 
         this.activity = activity;
         gs = new GameSounds(activity);
@@ -44,7 +44,7 @@ public class Simon extends AsyncTask<Void, Void, Void> {
 
 
     //play next round
-    public int[] playNext(){
+    public int[] playNext() {
         Log.i("Simon Class", "Playing new round");
         simon_sequence[current_round] = rand.nextInt(3) + 1;
         current_round++;
@@ -52,111 +52,134 @@ public class Simon extends AsyncTask<Void, Void, Void> {
     }
 
     //not sure we need this
-    public int[] getSequence(){
+    public int[] getSequence() {
         return simon_sequence;
     }
 
     //Sets players pick
-    public void setPlayerPick(int p){
+    public void setPlayerPick(int p) {
         //player_sequence[current_round - 1] = p;
         Log.i("Simon Class", "Setting Player Pick to " + Integer.toString(p));
     }
 
     //Checks to see if next round is possible
-    public boolean nextRound(){
+    public boolean nextRound() {
         return compareSequence();
     }
+
     //Checks for win
-    public boolean checkForWin(){
-        if(compareSequence() && current_round == MAX_ROUNDS){
+    public boolean checkForWin() {
+        if (compareSequence() && current_round == MAX_ROUNDS) {
             return true;
         }
         return false;
     }
+
     //Sets high score if greater than current round and checkForWin is true and returns high score
     public int setHighScore() {
-        if (checkForWin() && current_round > highScore){
+        if (checkForWin() && current_round > highScore) {
             highScore = current_round;
         }
         return highScore;
     }
-    public void flashOn(Drawable drawable){
+
+    public void flashOn(Drawable drawable) {
         drawable.setAlpha(0);
     }
 
-    public void flashOff(Drawable drawable){
+    public void flashOff(Drawable drawable) {
         drawable.setAlpha(255);
     }
 
-    public void flash(Drawable drawable){
+    public void flash(Drawable drawable) {
 
         try {
             flashOn(drawable);
             Thread.sleep(1);
             flashOff(drawable);
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
 
         }
     }
 
     // don't think we need this
-    private void clearPlayerSequence(){
-        for(int i = 0; i < current_round; i++){
+    private void clearPlayerSequence() {
+        for (int i = 0; i < current_round; i++) {
             player_sequence[i] = 0;
         }
     }
 
     private boolean compareSequence() {
-        for(int i = 0; i < current_round; i++){
-            if(simon_sequence[i] != player_sequence[i]){
+        for (int i = 0; i < current_round; i++) {
+            if (simon_sequence[i] != player_sequence[i]) {
                 return false;
             }
         }
         return true;
     }
 
-    public void playSimonSequence() {
+    public int getCurrentRound(){
+        return current_round;
+    }
+} //end of simon class
 
-        playNext();
+class SimonSequence extends AsyncTask<Void, Integer, Void> {
+
+    private Activity activity;
+    private Simon simon;
+
+    SimonSequence(Activity activity, Simon simon){
+        this.activity = activity;
+        this.simon = simon;
+    }
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+        simon.playNext();
+        int current_round = simon.getCurrentRound();
+        int [] simon_sequence = simon.getSequence();
 
         try {
             for (int i = 0; i < current_round; i++) {
                 Log.i("Simon Class", Integer.toString(simon_sequence[i]) + ", " + Integer.toString(current_round));
                 switch (simon_sequence[i]) {
                     case 1:
-                        activity.findViewById(R.id.button_green).performClick();
+                        //activity.findViewById(R.id.button_green).performClick();
+                        publishProgress(R.id.button_green);
                         Thread.sleep(1000);
                         break;
                     case 2:
-                        activity.findViewById(R.id.button_red).performClick();
+                        //activity.findViewById(R.id.button_red).performClick();
+                        publishProgress(R.id.button_red);
                         Thread.sleep(1000);
                         break;
                     case 3:
-                        activity.findViewById(R.id.button_yellow).performClick();
+                        //activity.findViewById(R.id.button_yellow).performClick();
+                        publishProgress(R.id.button_yellow);
                         Thread.sleep(1000);
                         break;
                     case 4:
-                        activity.findViewById(R.id.button_blue).performClick();
+                        //activity.findViewById(R.id.button_blue).performClick();
+                        publishProgress(R.id.button_blue);
                         Thread.sleep(1000);
                         break;
                 }
+
             }
         } catch (InterruptedException e) {
             Log.i("playSimonSequence", "Interrupted");
         }
-    }
-
-    @Override
-    protected Void doInBackground(Void... voids) {
-        publishProgress();
         return null;
     }
 
     @Override
-    protected void onProgressUpdate(Void... values) {
-        playSimonSequence();
+    protected void onProgressUpdate(Integer... values) {
+        activity.findViewById(values[0]).performClick();
     }
 }
+
+
+
 //class GameAnimations extends AsyncTask<Integer, Integer, Void> {
 //
 //    private Activity activity;
@@ -203,22 +226,39 @@ public class Simon extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             activity.findViewById(id).getBackground().setAlpha(128);
+
+//            try {
+//                activity.findViewById(id).getBackground().setAlpha(128);
+//                Thread.sleep(1);
+//                activity.findViewById(id).getBackground().setAlpha(255);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
 
         @Override
         protected Void doInBackground(Void... values) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            publishProgress();
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onProgressUpdate(Void... values) {
             activity.findViewById(id).getBackground().setAlpha(255);
+//            try {
+//                activity.findViewById(id).getBackground().setAlpha(128);
+//                Thread.sleep(1);
+//                activity.findViewById(id).getBackground().setAlpha(255);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+
         }
+
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            activity.findViewById(id).getBackground().setAlpha(255);
+//        }
 
 
 

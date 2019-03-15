@@ -6,14 +6,21 @@
     android:layout_height="match_parent"
     android:weightSum="4"
     android:orientation="vertical"
-    tools:context=".simon_reverse">
+    tools:context=".simon_react">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/play_var1"
-        android:layout_weight="1"/>
+        android:layout_weight=".5"/>
+
+    <Button
+        android:id="@+id/play_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".5"
+        android:text="Play!" />
 
     <LinearLayout
         android:layout_width="match_parent"

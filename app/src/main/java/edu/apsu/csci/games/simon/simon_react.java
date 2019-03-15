@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SimpleTimeZone;
 
 
 public class simon_react extends Activity {
@@ -75,7 +76,8 @@ public class simon_react extends Activity {
 
         @Override
         public void onClick(View v) {
-            simon.playSimonSequence();
+            SimonSequence ss = new SimonSequence(simon_react.this, simon);
+            ss.execute();
         }
     }
 
