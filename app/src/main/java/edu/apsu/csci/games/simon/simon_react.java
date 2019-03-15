@@ -7,8 +7,12 @@ import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -22,8 +26,11 @@ public class simon_react extends Activity {
     //private SoundPool soundPool; //variable for sounds
     //private Set<Integer> soundsLoaded; //variable for sounds ArrayList
 
+
    private GameSounds gs = new GameSounds(this);
    private int hs;
+   //final Handler handler = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,24 +39,43 @@ public class simon_react extends Activity {
 
         //soundsLoaded = new HashSet<Integer>(); //ArrayList of sounds
 
+        findViewById(R.id.play_button).setEnabled(false);
+
 
 
     }
     class buttonListener implements View.OnClickListener {
 
         @Override
-        public void onClick(View v) {
-            GameAnimations ga = new GameAnimations(simon_react.this);
-            //GameSounds gs = new GameSounds(simon_react.this);
+        public void onClick(final View v) {
 
-            ga.execute(v.getId());
+            GameAnimations ga = new GameAnimations(simon_react.this, v.getId());
+
+
             gs.playSound(v.getId());
+            ga.execute();
+
+            //simon.flash(v.getBackground());
 
 
             Button button = (Button) v;
             int playerPick = Integer.parseInt(button.getText().toString());
 
             simon.setPlayerPick(playerPick);
+
+        }
+
+
+
+
+
+}
+
+    class playListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            simon.playSimonSequence();
         }
     }
 
@@ -58,17 +84,12 @@ public class simon_react extends Activity {
     protected void onResume() {
         super.onResume();
 
-
-
-
-        //gs.loadS(this);
-        //gs.loadSounds();
-
-
         findViewById(R.id.button_blue).setOnClickListener(new buttonListener());
         findViewById(R.id.button_green).setOnClickListener(new buttonListener());
         findViewById(R.id.button_red).setOnClickListener(new buttonListener());
         findViewById(R.id.button_yellow).setOnClickListener(new buttonListener());
+
+        findViewById(R.id.play_button).setOnClickListener(new playListener());
 
         gs.execute();
 
@@ -81,7 +102,7 @@ public class simon_react extends Activity {
 //            }
 //        }
 
-        simon.playSimonSequence();
+        //simon.playSimonSequence();
         //simon.checkForWin();
         //hs = simon.setHighScore();
         //Toast.makeText (getBaseContext(),"Congratulations! You Broke The High Score Record with: "+ hs, Toast.LENGTH_LONG).show();
