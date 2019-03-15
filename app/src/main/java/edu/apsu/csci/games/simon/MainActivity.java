@@ -1,7 +1,9 @@
 package edu.apsu.csci.games.simon;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
@@ -43,7 +45,21 @@ public class MainActivity extends Activity {
                 playSimonReverse();
             }
         });
+
+        //should have loaded sounds in this activity since they are needed for multiple game. no need to load them for each game.
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences prefs = this.getSharedPreferences("PlayerHighScore", Context.MODE_PRIVATE);
+        int score = prefs.getInt("HighScore", 0);
+
+        TextView tv = findViewById(R.id.high_score_tv);
+        tv.setText("High Score: " + score);
+    }
+
+
 
     private void playSimonReact(){
         Log.i("Function Start ", "In Play");

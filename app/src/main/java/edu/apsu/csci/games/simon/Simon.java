@@ -1,11 +1,14 @@
 package edu.apsu.csci.games.simon;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
+
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -22,14 +25,19 @@ public class Simon {
     private int player_round = 0;
     private Random rand = new Random();
     private Activity activity;
-    //private GameSounds gs;
+    private GameSounds gs;
     //private GameAnimations ga;
     private int highScore;
 
-    Simon(Activity activity) {
+    Simon(Activity activity, GameSounds gs) {
 
         this.activity = activity;
-        //gs = new GameSounds(activity);
+        this.gs = gs;
+
+
+        SharedPreferences prefs = activity.getSharedPreferences("PlayerHighScore", Context.MODE_PRIVATE);
+        highScore = prefs.getInt("HighScore", 0);
+
 
     }
 
@@ -57,30 +65,26 @@ public class Simon {
                 player_round += 1;
                 Log.i("Simon Class", "Player_Good_Job!");
             } else {
+                gs.playSound(-2); // play wrong sound
+                TextView tv = activity.findViewById(R.id.loser_tv);
+                tv.setText("Loser! Try Again!");
                 Log.i("Simon Class", "Player_Bad_Job!");
             }
         }
     }
 
-    //Checks to see if next round is possible
-    public boolean nextRound() {
-        return compareSequence();
-    }
-
-    //Checks for win
-    public boolean checkForWin() {
-        if (compareSequence() && current_round == MAX_ROUNDS) {
-            return true;
-        }
-        return false;
-    }
-
     //Sets high score if greater than current round and checkForWin is true and returns high score
-    public int setHighScore() {
-        if (checkForWin() && current_round > highScore) {
-            highScore = current_round;
+    public void setHighScore(){
+        SharedPreferences prefs = activity.getSharedPreferences("PlayerHighScore", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        if (current_round > highScore) {
+            editor.putInt("HighScore", current_round);
+            Log.i("Current Round", Integer.toString(current_round));
+        } else {
+            editor.putInt("HighScore", highScore);
         }
-        return highScore;
+        editor.commit();
     }
 
     public void isSimonsTurn(){
@@ -88,43 +92,10 @@ public class Simon {
     }
 
     public void isPlayersTurn(){
+        player_round = 0;
         simonsTurn = false;
     }
 
-//    public void flashOn(Drawable drawable) {
-//        drawable.setAlpha(0);
-//    }
-//
-//    public void flashOff(Drawable drawable) {
-//        drawable.setAlpha(255);
-//    }
-//
-//    public void flash(Drawable drawable) {
-//
-//        try {
-//            flashOn(drawable);
-//            Thread.sleep(1);
-//            flashOff(drawable);
-//        } catch (InterruptedException e) {
-//
-//        }
-//    }
-
-    // don't think we need this
-    private void clearPlayerSequence() {
-        for (int i = 0; i < current_round; i++) {
-            player_sequence[i] = 0;
-        }
-    }
-
-    private boolean compareSequence() {
-        for (int i = 0; i < current_round; i++) {
-            if (simon_sequence[i] != player_sequence[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public int getCurrentRound(){
         return current_round;
@@ -230,6 +201,7 @@ class GameSounds extends AsyncTask<Void, Void, Void>{
     private int greenId;
     private int redId;
     private int yellowId;
+    private int wrongId;
 
 
     GameSounds(Activity activity) {
@@ -266,12 +238,14 @@ class GameSounds extends AsyncTask<Void, Void, Void>{
         greenId = soundPool.load(activity, R.raw.button2, 1);
         redId = soundPool.load(activity, R.raw.button3, 1);
         yellowId = soundPool.load(activity, R.raw.button4, 1);
+        wrongId = soundPool.load(activity, R.raw.wrong, 1);
 
 
         Log.i("SoundID_Load", "blue " + Integer.toString(blueId));
         Log.i("SoundID_Load", "red " + Integer.toString(redId));
         Log.i("SoundID_Load", "gn " + Integer.toString(greenId));
         Log.i("SoundID_Load", "yl " + Integer.toString(yellowId));
+        Log.i("SoundID_Load", "wr " + Integer.toString(wrongId));
         return null;
     }
 
@@ -298,6 +272,9 @@ class GameSounds extends AsyncTask<Void, Void, Void>{
         }
         else if (id == R.id.button_yellow) {
             result = soundPool.play(yellowId, 1.0f, 1.0f, 0, 0, 1.0f);
+        }
+        else if (id == -2){
+            result = soundPool.play(wrongId, 1.0f, 1.0f, 0, 0, 1.0f);
         }
         Log.i("SoundResult", Integer.toString(result));
     }

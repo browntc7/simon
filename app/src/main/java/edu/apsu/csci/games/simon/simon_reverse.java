@@ -1,25 +1,29 @@
 package edu.apsu.csci.games.simon;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 
 public class simon_reverse extends Activity {
+    private GameSounds gs;
+    private Simon simon;
 
-    private Simon simon = new Simon(this);
-    private GameSounds gs = new GameSounds(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_simon_squared);
+        setContentView(R.layout.activity_simon_reverse);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        gs = new GameSounds(this);
+        simon = new Simon(this, gs);
 
         findViewById(R.id.button_blue).setOnClickListener(new buttonListener());
         findViewById(R.id.button_green).setOnClickListener(new buttonListener());
@@ -28,13 +32,18 @@ public class simon_reverse extends Activity {
 
         findViewById(R.id.play_button).setOnClickListener(new playListener());
 
+
         gs.execute();
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         gs.clearSounds();
+        gs = null;
+        Log.i("in onpause", "setting high score");
+        simon.setHighScore();
     }
 
     class buttonListener implements View.OnClickListener {
@@ -59,7 +68,7 @@ public class simon_reverse extends Activity {
         @Override
         public void onClick(View v) {
             SimonSequence ss = new SimonSequence(simon_reverse.this, simon);
-            ss.execute();
+            ss.execute(1000);
         }
     }
 }

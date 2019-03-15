@@ -72,6 +72,12 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/hasbro" />
 
+        <TextView
+            android:id="@+id/high_score_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="High Score:" />
+
     </LinearLayout>
 
     <View
