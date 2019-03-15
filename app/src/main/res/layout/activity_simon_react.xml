@@ -11,9 +11,12 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="10dp"
+        android:layout_weight=".5"
         android:text="@string/play_var1"
-        android:layout_weight=".5"/>
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/play_button"
@@ -68,13 +71,14 @@
             android:layout_weight="1"
             android:background="#FF4B3EDD"
             android:text="4" />
-
     </LinearLayout>
 
     <TextView
-        android:id="@+id/loser_tv"
+        android:id="@+id/reactRules_tv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="36sp" />
+        android:layout_height="58dp"
+        android:layout_weight=".5"
+        android:textAlignment="center"
+        android:textStyle="bold"/>
+
 </LinearLayout>

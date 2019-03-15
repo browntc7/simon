@@ -87,7 +87,9 @@ public class MainActivity extends Activity {
             String message = "<html>" +
                     "<h2>About Simon</h2>" +
                     "<p><b>Simon is a registered trademark of Hasbro Gaming.</b></p>"+
-                    "<p>Music</p>" +
+                    "<p><b>This app contains Simon React, Simon Reverse, and Simon Squared.</b></p>"+
+                    "<p><b>Developers: Tyler Brown and Charity Edmonds ~ 2019</b></p>"+
+                    "<p>Music Credits</p>" +
                     "<p><b>Source:</b> Casio VL-Tone VL-1, Piano G Low Short  <br>" +
                     "<b>Creator:</b> acollier123<br>" +
                     "<b>Link: </b> <a href='https://https://freesound.org/people/acollier123/sounds/122673/>source website</a><br>" +
