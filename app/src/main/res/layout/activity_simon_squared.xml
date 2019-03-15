@@ -12,7 +12,7 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/play_var1"
+        android:text="@string/play_var2"
         android:layout_weight=".5"/>
 
     <Button

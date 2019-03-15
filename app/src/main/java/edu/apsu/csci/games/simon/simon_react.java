@@ -42,8 +42,6 @@ public class simon_react extends Activity {
 
         findViewById(R.id.play_button).setEnabled(false);
 
-
-
     }
     class buttonListener implements View.OnClickListener {
 
@@ -52,12 +50,8 @@ public class simon_react extends Activity {
 
             GameAnimations ga = new GameAnimations(simon_react.this, v.getId());
 
-
             gs.playSound(v.getId());
             ga.execute();
-
-            //simon.flash(v.getBackground());
-
 
             Button button = (Button) v;
             int playerPick = Integer.parseInt(button.getText().toString());
@@ -66,10 +60,6 @@ public class simon_react extends Activity {
 
         }
 
-
-
-
-
 }
 
     class playListener implements View.OnClickListener {
@@ -77,7 +67,7 @@ public class simon_react extends Activity {
         @Override
         public void onClick(View v) {
             SimonSequence ss = new SimonSequence(simon_react.this, simon);
-            ss.execute();
+            ss.execute(1000);
         }
     }
 
@@ -171,16 +161,11 @@ public class simon_react extends Activity {
         //simon.playSimonSequence();
     }
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        if (soundPool != null) {
-//            soundPool.release();
-//            soundPool = null;
-//
-//            soundsLoaded.clear();
-//        }
-//    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        gs.clearSounds();
+    }
 
 //    private void playButton(int soundId, View buttonView) {
 //        if (soundsLoaded.contains(soundId)) {

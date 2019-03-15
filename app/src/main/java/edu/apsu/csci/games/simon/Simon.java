@@ -1,20 +1,11 @@
 package edu.apsu.csci.games.simon;
 
 import android.app.Activity;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.AsyncTask;
-import android.support.annotation.MainThread;
 import android.util.Log;
-import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.widget.Button;
-import android.widget.Toast;
-
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -27,18 +18,18 @@ public class Simon {
     private int[] simon_sequence = new int[MAX_ROUNDS];
     private int[] player_sequence = new int[MAX_ROUNDS];
     private int current_round = 0;
+    private boolean simonsTurn = false;
     private int player_round = 0;
     private Random rand = new Random();
     private Activity activity;
-    private GameSounds gs;
-    private GameAnimations ga;
+    //private GameSounds gs;
+    //private GameAnimations ga;
     private int highScore;
 
     Simon(Activity activity) {
 
         this.activity = activity;
-        gs = new GameSounds(activity);
-        //ga = new GameAnimations(activity);
+        //gs = new GameSounds(activity);
 
     }
 
@@ -59,7 +50,16 @@ public class Simon {
     //Sets players pick
     public void setPlayerPick(int p) {
         //player_sequence[current_round - 1] = p;
-        Log.i("Simon Class", "Setting Player Pick to " + Integer.toString(p));
+        if (!simonsTurn) {
+            Log.i("Simon Class", "Setting Player Pick to " + Integer.toString(p));
+
+            if(simon_sequence[player_round] == p){
+                player_round += 1;
+                Log.i("Simon Class", "Player_Good_Job!");
+            } else {
+                Log.i("Simon Class", "Player_Bad_Job!");
+            }
+        }
     }
 
     //Checks to see if next round is possible
@@ -83,24 +83,32 @@ public class Simon {
         return highScore;
     }
 
-    public void flashOn(Drawable drawable) {
-        drawable.setAlpha(0);
+    public void isSimonsTurn(){
+        simonsTurn = true;
     }
 
-    public void flashOff(Drawable drawable) {
-        drawable.setAlpha(255);
+    public void isPlayersTurn(){
+        simonsTurn = false;
     }
 
-    public void flash(Drawable drawable) {
-
-        try {
-            flashOn(drawable);
-            Thread.sleep(1);
-            flashOff(drawable);
-        } catch (InterruptedException e) {
-
-        }
-    }
+//    public void flashOn(Drawable drawable) {
+//        drawable.setAlpha(0);
+//    }
+//
+//    public void flashOff(Drawable drawable) {
+//        drawable.setAlpha(255);
+//    }
+//
+//    public void flash(Drawable drawable) {
+//
+//        try {
+//            flashOn(drawable);
+//            Thread.sleep(1);
+//            flashOff(drawable);
+//        } catch (InterruptedException e) {
+//
+//        }
+//    }
 
     // don't think we need this
     private void clearPlayerSequence() {
@@ -123,7 +131,7 @@ public class Simon {
     }
 } //end of simon class
 
-class SimonSequence extends AsyncTask<Void, Integer, Void> {
+class SimonSequence extends AsyncTask<Integer, Integer, Void> {
 
     private Activity activity;
     private Simon simon;
@@ -134,7 +142,8 @@ class SimonSequence extends AsyncTask<Void, Integer, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    protected Void doInBackground(Integer... values) {
+        simon.isSimonsTurn();
         simon.playNext();
         int current_round = simon.getCurrentRound();
         int [] simon_sequence = simon.getSequence();
@@ -144,24 +153,20 @@ class SimonSequence extends AsyncTask<Void, Integer, Void> {
                 Log.i("Simon Class", Integer.toString(simon_sequence[i]) + ", " + Integer.toString(current_round));
                 switch (simon_sequence[i]) {
                     case 1:
-                        //activity.findViewById(R.id.button_green).performClick();
                         publishProgress(R.id.button_green);
-                        Thread.sleep(1000);
+                        Thread.sleep(values[0]);
                         break;
                     case 2:
-                        //activity.findViewById(R.id.button_red).performClick();
                         publishProgress(R.id.button_red);
-                        Thread.sleep(1000);
+                        Thread.sleep(values[0]);
                         break;
                     case 3:
-                        //activity.findViewById(R.id.button_yellow).performClick();
                         publishProgress(R.id.button_yellow);
-                        Thread.sleep(1000);
+                        Thread.sleep(values[0]);
                         break;
                     case 4:
-                        //activity.findViewById(R.id.button_blue).performClick();
                         publishProgress(R.id.button_blue);
-                        Thread.sleep(1000);
+                        Thread.sleep(values[0]);
                         break;
                 }
 
@@ -169,6 +174,7 @@ class SimonSequence extends AsyncTask<Void, Integer, Void> {
         } catch (InterruptedException e) {
             Log.i("playSimonSequence", "Interrupted");
         }
+        simon.isPlayersTurn();
         return null;
     }
 
@@ -178,42 +184,7 @@ class SimonSequence extends AsyncTask<Void, Integer, Void> {
     }
 }
 
-
-
-//class GameAnimations extends AsyncTask<Integer, Integer, Void> {
-//
-//    private Activity activity;
-//    private final static int ALPHA_MAX = 255;
-//    private final static int ALPHA_MIN = 32;
-//    private final static int FLASH_MS = 100;   // is this an emulator issue; or should i not be updating the ui like this? (some flash slow, some flash fast, some not at all); however the click is being registered!
-//                                            // Turns out it was set to high; set it to 1ms and all is ok.
-//
-//    GameAnimations (Activity activity){
-//        this.activity = activity;
-//    }
-//
-//    @Override
-//    protected Void doInBackground(Integer... values) {
-//        try {
-//            publishProgress(values[0], ALPHA_MAX);
-//            Thread.sleep(FLASH_MS);
-//            publishProgress(values[0], ALPHA_MIN);
-//            Thread.sleep(FLASH_MS);
-//            publishProgress(values[0], ALPHA_MAX);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-//
-//    @Override
-//    protected void onProgressUpdate(Integer... values) {
-//        activity.findViewById(values[0]).getBackground().setAlpha(values[1]);
-//    }
-//}
-
-    class GameAnimations extends AsyncTask<Void, Void, Void> {
+    class GameAnimations extends AsyncTask<Void, Integer, Void> {
 
         private Activity activity;
         private int id;
@@ -225,120 +196,31 @@ class SimonSequence extends AsyncTask<Void, Integer, Void> {
 
         @Override
         protected void onPreExecute() {
-            activity.findViewById(id).getBackground().setAlpha(128);
-
-//            try {
-//                activity.findViewById(id).getBackground().setAlpha(128);
-//                Thread.sleep(1);
-//                activity.findViewById(id).getBackground().setAlpha(255);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            //activity.findViewById(id).getBackground().setAlpha(128);
         }
 
         @Override
         protected Void doInBackground(Void... values) {
-            publishProgress();
+            try {
+                publishProgress(128);
+                Thread.sleep(100);
+                publishProgress(255);
+            } catch (InterruptedException e){
+
+            }
             return null;
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
-            activity.findViewById(id).getBackground().setAlpha(255);
-//            try {
-//                activity.findViewById(id).getBackground().setAlpha(128);
-//                Thread.sleep(1);
-//                activity.findViewById(id).getBackground().setAlpha(255);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-
+        protected void onProgressUpdate(Integer... values) {
+            activity.findViewById(id).getBackground().setAlpha(values[0]);
         }
 
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            activity.findViewById(id).getBackground().setAlpha(255);
-//        }
-
-
-
+        @Override
+        protected void onPostExecute(Void aVoid) {
+           // super.onPostExecute(aVoid);
+        }
     }
-
-//class GameAnimations{
-//
-//    private Activity activity;
-//    int id;
-//
-//    GameAnimations(Activity activity, int id){
-//
-//        this.activity = activity;
-//        this.id = id;
-//
-//        final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
-//        animation.setDuration(500); // duration - half a second
-//        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
-//        animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
-//        animation.setRepeatMode(Animation.REVERSE);
-//
-//        final Button btn = activity.findViewById(id);
-//        btn.startAnimation(animation);
-//    }
-//
-//    public void clearAnimations(){
-//        activity.findViewById(id).clearAnimation();
-//    }
-//
-//
-//}
-
-//class GameSounds extends AsyncTask<Integer, Integer, Void>{
-//    private SoundPool soundPool; //variable for sounds
-//    private Set<Integer> soundsLoaded; //variable for sounds ArrayList
-//    private Activity activity;
-//
-//    GameSounds(Activity activity){
-//
-//        this.activity = activity;
-//
-//        AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
-//        attrBuilder.setUsage(AudioAttributes.USAGE_GAME);
-//
-//        SoundPool.Builder spBuilder = new SoundPool.Builder();
-//        spBuilder.setAudioAttributes(attrBuilder.build());
-//        spBuilder.setMaxStreams(4);
-//        soundPool = spBuilder.build();
-//
-//        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-//            @Override
-//            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-//                if (status == 0) { // success
-//                    soundsLoaded.add(sampleId);
-//
-//                    Log.i("SOUND", "Sound loaded " + sampleId);
-//                } else {
-//                    Log.i("SOUND", "Error cannot load sound status = " + status);
-//                }
-//            }
-//        });
-//
-//    }
-//
-//    @Override
-//    protected Void doInBackground(Integer... values) {
-//        final int soundId_1 = soundPool.load(activity, R.raw.button1, 1);
-//        final int soundId_2 = soundPool.load(activity, R.raw.button2, 1);
-//        final int soundId_3 = soundPool.load(activity, R.raw.button3, 1);
-//        final int soundId_4 = soundPool.load(activity, R.raw.button4, 1);
-//        return null;
-//    }
-//
-//    protected void onProgressUpdate(int buttonId) {
-//        //if (soundsLoaded.contains(values[0])) {
-//            soundPool.play(buttonId, 12.0f, 12.0f, 0, 0, 1.0f);
-//        //}
-//    }
-//}
-
 
 class GameSounds extends AsyncTask<Void, Void, Void>{
     private SoundPool soundPool; //variable for sounds
@@ -378,26 +260,12 @@ class GameSounds extends AsyncTask<Void, Void, Void>{
         });
     }
 
-
-
-//    public boolean soundsAreLoaded(){
-//        return (soundsLoaded.contains(blueId) && soundsLoaded.contains(redId) && soundsLoaded.contains(greenId) && soundsLoaded.contains(yellowId));
-//    }
     @Override
     protected Void doInBackground(Void... voids) {
         blueId = soundPool.load(activity, R.raw.button1, 1);
         greenId = soundPool.load(activity, R.raw.button2, 1);
         redId = soundPool.load(activity, R.raw.button3, 1);
         yellowId = soundPool.load(activity, R.raw.button4, 1);
-
-//        if (!soundsAreLoaded()){
-//            try {
-//                Thread.sleep(10);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
 
 
         Log.i("SoundID_Load", "blue " + Integer.toString(blueId));
@@ -412,18 +280,6 @@ class GameSounds extends AsyncTask<Void, Void, Void>{
         activity.findViewById(R.id.play_button).setEnabled(true);
     }
 
-    //    public void loadSounds() {
-//        blueId = soundPool.load(activity, R.raw.button1, 1);
-//        greenId = soundPool.load(activity, R.raw.button2, 1);
-//        redId = soundPool.load(activity, R.raw.button3, 1);
-//        yellowId = soundPool.load(activity, R.raw.button4, 1);
-//
-//        Log.i("SoundID_Load", "blue " + Integer.toString(blueId));
-//        Log.i("SoundID_Load", "red " + Integer.toString(redId));
-//        Log.i("SoundID_Load", "gn " + Integer.toString(greenId));
-//        Log.i("SoundID_Load", "yl " + Integer.toString(yellowId));
-//
-//    }
 
     public void playSound(int id){
         int result = -1;
@@ -444,6 +300,16 @@ class GameSounds extends AsyncTask<Void, Void, Void>{
             result = soundPool.play(yellowId, 1.0f, 1.0f, 0, 0, 1.0f);
         }
         Log.i("SoundResult", Integer.toString(result));
+    }
+
+    public void clearSounds(){
+        if (soundPool != null) {
+            soundPool.release();
+            soundPool = null;
+
+            soundsLoaded.clear();
+        }
+
     }
 
 
