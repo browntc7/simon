@@ -74,6 +74,7 @@ public class simon_react extends Activity {
         super.onPause();
         gs.clearSounds();
         gs = null;
+        simon.setHighScore();
     }
 }
 

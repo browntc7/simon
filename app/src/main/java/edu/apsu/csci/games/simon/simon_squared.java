@@ -47,6 +47,7 @@ public class simon_squared extends Activity {
         super.onPause();
         gs.clearSounds();
         gs = null;
+        simon.setHighScore();
     }
 
     class buttonListener implements View.OnClickListener {

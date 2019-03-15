@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         SharedPreferences prefs = this.getSharedPreferences("PlayerHighScore", Context.MODE_PRIVATE);
-        int score = prefs.getInt("HighScore", 1);
+        int score = prefs.getInt("HighScore", 0);
 
         TextView tv = findViewById(R.id.high_score_tv);
         tv.setText("High Score: " + score);

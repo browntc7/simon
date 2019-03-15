@@ -8,6 +8,7 @@ import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -66,8 +67,7 @@ public class Simon {
                 Log.i("Simon Class", "Player_Good_Job!");
             } else {
                 gs.playSound(-2); // play wrong sound
-                TextView tv = activity.findViewById(R.id.loser_tv);
-                tv.setText("Loser! Try Again!");
+                Toast.makeText(activity, "Loser! Sorry Try Again!", Toast.LENGTH_LONG);
                 Log.i("Simon Class", "Player_Bad_Job!");
             }
         }
