@@ -14,6 +14,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashSet;
@@ -41,6 +42,14 @@ public class simon_react extends Activity {
         //soundsLoaded = new HashSet<Integer>(); //ArrayList of sounds
 
         findViewById(R.id.play_button).setEnabled(false);
+
+        TextView textView = findViewById(R.id.reactRules_tv);
+        textView.setTextSize(18);
+        textView.setText("\nSimon React has four colored buttons, each producing a different " +
+                "tone when it is pressed. A round in the game consists of " +
+                "the device lighting up one or more buttons in a random order," +
+                "after which the player must reproduce that order by pressing the buttons. Good luck!");
+
 
     }
     class buttonListener implements View.OnClickListener {

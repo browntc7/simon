@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class simon_squared extends Activity {
 
@@ -14,6 +15,13 @@ public class simon_squared extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simon_squared);
+
+        TextView textView = findViewById(R.id.squaredRules_tv);
+        textView.setTextSize(18);
+        textView.setText("\nSimon Squared tests your memory exponentially FASTER!  There are four colored buttons, " +
+                "each producing a different tone when it is pressed. A round in the game consists of " +
+                "the device lighting up one or more buttons in a random order," +
+                "after which the player must reproduce that order by pressing the buttons--Quickly! Good luck!");
 
     }
 
